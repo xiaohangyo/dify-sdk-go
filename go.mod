@@ -1,4 +1,4 @@
-module github.com/zibber2015/dify-sdk-go
+module github.com/xiaohangyo/dify-sdk-go
 
 go 1.16
 
