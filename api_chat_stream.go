@@ -17,6 +17,22 @@ type ChatMessageStreamResponse struct {
 	Answer         string `json:"answer"`
 	CreatedAt      int64  `json:"created_at"`
 	ConversationID string `json:"conversation_id"`
+	Data           struct {
+		Id             string `json:"id"`
+		WorkflowId     string `json:"workflow_id"`
+		SequenceNumber int    `json:"sequence_number"`
+		Inputs         struct {
+			SysQuery          string        `json:"sys.query"`
+			SysFiles          []interface{} `json:"sys.files"`
+			SysConversationId string        `json:"sys.conversation_id"`
+			SysUserId         string        `json:"sys.user_id"`
+			SysDialogueCount  int           `json:"sys.dialogue_count"`
+			SysAppId          string        `json:"sys.app_id"`
+			SysWorkflowId     string        `json:"sys.workflow_id"`
+			SysWorkflowRunId  string        `json:"sys.workflow_run_id"`
+		} `json:"inputs"`
+		CreatedAt int `json:"created_at"`
+	} `json:"data"`
 }
 
 // type ChatMessageStreamResponse struct {
@@ -105,11 +121,12 @@ func (api *API) chatMessagesStreamHandle(ctx context.Context, resp *http.Respons
 					Err: errors.New("error streaming event: " + string(line)),
 				}
 				return
-			} else if resp.Event != "message" {
-				continue
-			} else if resp.Answer == "" {
+			} else if resp.Event == "node_finished" {
 				return
 			}
+			// } else if resp.Answer == "" {
+			// 	return
+			// }
 			streamChannel <- resp
 		}
 	}
