@@ -99,12 +99,14 @@ func (api *API) chatMessagesStreamHandle(ctx context.Context, resp *http.Respons
 				streamChannel <- ChatMessageStreamChannelResponse{
 					Err: fmt.Errorf("error unmarshalling event: %w", err),
 				}
-				return
+				continue
 			} else if resp.Event == "error" {
 				streamChannel <- ChatMessageStreamChannelResponse{
 					Err: errors.New("error streaming event: " + string(line)),
 				}
 				return
+			} else if resp.Event != "message" {
+				continue
 			} else if resp.Answer == "" {
 				return
 			}
